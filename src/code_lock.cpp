@@ -1,6 +1,8 @@
 #include <Arduino.h>
-#include <Keypad.h>
 #include <LiquidCrystal.h>
+#include <Keypad.h>
+
+LiquidCrystal lcd(2, 3, A3, A2, A1, A0);
 
 const int ROW_NUM = 4;
 const int COLUMN_NUM = 4;
@@ -16,8 +18,6 @@ byte pin_rows[ROW_NUM] = {4, 5, 6, 7};
 byte pin_column[COLUMN_NUM] = {8, 9, 10, 11};
 
 Keypad keypad = Keypad( makeKeymap(keys), pin_rows, pin_column, ROW_NUM, COLUMN_NUM );
-
-LiquidCrystal lcd(2, 3, A3, A2, A1, A0);
 
 char password[] = {'3', '5', '9', '3'};
 char input[] = {'-', '-', '-', '-'};
@@ -35,8 +35,6 @@ void setup(){
   lcd.setCursor(0, 1);
   lcd.print("----");
   lcd.setCursor(0, 1);
-
-  Serial.begin(9600);
 }
 
 void loop(){
@@ -46,12 +44,11 @@ void loop(){
     if (pos != 0) {
       pos--;
       input[pos] = '-';
-      lcd.setCursor(pos, 1);
+      lcd.moveCursorLeft();
       lcd.print('-');
-      lcd.setCursor(pos, 1);
+      lcd.moveCursorLeft();
     }    
   }
-
   else if (key == '*') {
     if (pos == 4) {
       lcd.clear();
@@ -66,7 +63,6 @@ void loop(){
             delay(3000);
             digitalWrite(A5, LOW);
       }
-
       else {
         digitalWrite(A4, HIGH);
         lcd.print("Wrong password!");
@@ -87,13 +83,11 @@ void loop(){
       pos = 0;
     }    
   }
-
   else if (key) {
     if (pos < 4) {
-      Serial.println(key);
       input[pos] = key;
-      lcd.print(input[pos]);
       pos++;
+      lcd.print(key);
     }
   }
 }
